@@ -1,37 +1,29 @@
-from selene.support.shared import browser
-from selene import browser, be, have
-import os
+from demoga_tests.data.users import User
+from demoga_tests.pages.registration_page import RegistrationPage
 
 
 def test_forms_demoga_praktika():
-    browser.open('/automation-practice-form')
-    browser.element('#firstName').type("Dinara")
-    browser.element('#lastName').type("Kokhanovskaya")
-    browser.element('#userEmail').type("dinkokh@example.com")
-    browser.element('[for="gender-radio-2"]').click()
-    browser.element('#userNumber').type("9090909090")
-    browser.element('#dateOfBirthInput').click()
-    browser.element('.react-datepicker__year-select').click().element('option[value="1984"]').click()
-    browser.element('.react-datepicker__month-select').click().element('option[value="6"]').click()
-    browser.element('.react-datepicker__day--027').click()
-    browser.element('#subjectsInput').type('Computer Science').press_enter()
-    browser.element('label[for="hobbies-checkbox-3"]').click()
-    browser.element('#uploadPicture').send_keys(os.path.abspath('picture/image.png'))
-    browser.element('#currentAddress').type('460000,Russia, Orenburg, Solynoy')
-    browser.element('#react-select-3-input').type('Uttar Pradesh').click().press_enter()
-    browser.element('#react-select-4-input').type('Agra').click().press_enter()
-    browser.element("#submit").execute_script("element.click()")
+    registration_page = RegistrationPage()
 
-    browser.element('.table').all('tr td:nth-child(2)').should(have.texts
-        (
-        'Dinara Kokhanovskaya',
-        'dinkokh@example.com',
-        'Female',
-        '9090909090',
-        '27 July,1984',
-        'Computer Science',
-        'Music',
-        'image.png',
-        '460000,Russia, Orenburg, Solynoy',
-        'Uttar Pradesh Agra'
-    ))
+    user = User(
+        first_name='Dinara',
+        last_name='Kokhanovskaya',
+        email='dinkokh@example.com',
+        gender='Female',
+        phone_number='9090909090',
+        month_of_birth='July',
+        year_of_birth='1984',
+        day_of_birth='27',
+        subject='Computer Science',
+        hobby='Music',
+        picture='image.png',
+        current_address='460000,Russia, Orenburg, Solynoy',
+        state='Uttar Pradesh',
+        city='Agra'
+    )
+
+    registration_page.open()
+
+    registration_page.register(user)
+
+    registration_page.user_should_registered(user)
